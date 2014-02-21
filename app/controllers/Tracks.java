@@ -1,21 +1,35 @@
 package controllers;
 
+import java.util.List;
 import java.util.UUID;
 
 import play.*;
 import play.libs.Json;
 import play.mvc.*;
+import play.libs.F.*;
+import java.util.concurrent.Callable;
 import views.html.*;
 import models.Track;
 import models.TrackFactory;
+import static play.libs.F.Promise.promise;
 
 public class Tracks extends Controller
 {
 	private static TrackFactory factory = new TrackFactory();
 	
 	public static Result index() {
-	    return ok(tracks.render(factory.findSome()));
-	}
+//	    return ok(tracks.render(factory.findSome()));
+        return async(
+                promise(new Function0<List<Track>>() {
+                    public List<Track> apply() {
+                        return factory.findSome();
+                    }
+                }).map(new Function<List<Track>,Result>() {
+                    public Result apply(List<Track> t) {
+                    return ok(tracks.render(t));
+                    }
+                })
+            );	}
 
 	public static Result create() {
 		Track newTrack = Json.fromJson(request().body().asJson(), Track.class);

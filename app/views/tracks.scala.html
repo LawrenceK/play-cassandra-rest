@@ -1,7 +1,7 @@
-@(message: String)
+@(tracks: List[Track]) 
 
-@main("Search Tracks") {
-
-    @play20.welcome(message, style = "Java")
-
+@main("Some Tracks we can look at"){
+    @for(track <- tracks){
+		${track.artist}
+    }
 }

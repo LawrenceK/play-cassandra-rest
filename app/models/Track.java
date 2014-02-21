@@ -1,7 +1,8 @@
 package models;
 
-import java.sql.Savepoint;
 import java.util.UUID;
+
+import com.datastax.driver.core.Row;
 
 public class Track {
 	private TrackFactory factory;
@@ -38,7 +39,16 @@ public class Track {
 	    this.mediaTitle = mediaTitle;
 	    this.mediaIndex = mediaIndex;		
 	}
-
+	Track(TrackFactory factory, Row row)
+	{
+		this.factory = factory;
+		this.id = row.getUUID("id");
+	    this.artist = row.getString("artist");
+	    this.title = row.getString("title");
+	    this.mediaType = row.getString("mediaType");
+	    this.mediaTitle = row.getString("mediaTitle");
+	    this.mediaIndex = row.getInt("mediaIndex");		
+	}
 	public void save()
 	{
 		factory.execute(factory.insert.bind(

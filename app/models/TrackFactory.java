@@ -40,7 +40,7 @@ public class TrackFactory
 			    "WHERE id = ?;");
 		this.selectn = this.session.prepare(
 			    "SELECT * FROM play_cassandra.tracks " + 
-			    "LIMIT 10;");
+			    "LIMIT 100;");
 	}
 	
 	public Track create(String artist, String title, String mediaType, String mediaTitle, Integer mediaIndex )
@@ -55,7 +55,8 @@ public class TrackFactory
 	
 	public Track findById(UUID id)
 	{
-		return new Track(this);
+		ResultSet rows = execute(select.bind(id) );		
+		return new Track( this, rows.one() );
 	}
 
 	public List<Track> findSome()
@@ -64,15 +65,7 @@ public class TrackFactory
 	    ResultSet rows = this.execute(this.selectn.bind());
 	    for (Row row : rows) 
 	    {
-	    	results.add( new Track( this, 
-	    			row.getUUID("id"), 
-	    			row.getString("artist"), 
-	    			row.getString("title"), 
-	    			row.getString("mediaType"), 
-	    			row.getString("mediaTitle"),
-	    			row.getInt("mediaIndex")
-	    		)
-	    	);
+	    	results.add( new Track( this, row ) ); 
 	    }
 		return results;
 	}

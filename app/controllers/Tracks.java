@@ -16,20 +16,26 @@ public class Tracks extends Controller
 	
 	public static Promise<Result> index() {
 		// we do this as the data access layer uses blocking calls.
-  	  	Promise<List<Track>> findSome = Promise.promise(
-      	    new Function0<List<Track>>() {
-      	      public List<Track> apply() {
-      	        return factory.findSome();
-      	      }
-      	    }
-      	  );
-  	  	return findSome.map(
-      	    new Function<List<Track>, Result>() {
-      	      public Result apply(List<Track> t) {
-                  return ok(tracks.render(t));
-      	      }
-      	    }
-      	  );        
+        System.out.printf("index\n");
+		Promise<Result> result = 
+			Promise.promise(
+					new Function0<List<Track>>() {
+						public List<Track> apply() {
+					        System.out.printf("find some\n");
+							return factory.findSome();
+						}
+					}
+				).map( new Function<List<Track>, Result>() 
+						{
+							public Result apply(List<Track> t) 
+							{
+						        System.out.printf("render\n");
+								return ok(tracks.render(t));
+							}
+						}
+					);
+        System.out.printf("index result: %s\n", result);
+		return result;
 	}
 
 	public static Result create() {

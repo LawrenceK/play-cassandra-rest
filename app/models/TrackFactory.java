@@ -67,6 +67,7 @@ public class TrackFactory
 	    {
 	    	results.add( new Track( this, row ) ); 
 	    }
+        System.out.printf("found some\n");
 		return results;
 	}
 }

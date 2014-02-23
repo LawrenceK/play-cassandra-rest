@@ -3,6 +3,7 @@ package controllers;
 import java.util.List;
 import java.util.UUID;
 
+import play.api.mvc.Accepting;
 import play.libs.Json;
 import play.mvc.*;
 import play.libs.F.*;
@@ -30,6 +31,8 @@ public class Tracks extends Controller
 							public Result apply(List<Track> t) 
 							{
 						        System.out.printf("render\n");
+						        if (request().acceptedTypes().get(0).accepts("application/json") )
+						        	{ return ok(Json.toJson(t));}
 								return ok(tracks.render(t));
 							}
 						}
